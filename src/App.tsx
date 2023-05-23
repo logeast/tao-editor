@@ -1,35 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import { Editor, rootCtx, defaultValueCtx } from "@milkdown/core";
+import { nord } from "@milkdown/theme-nord";
+import { Milkdown, MilkdownProvider, useEditor } from "@milkdown/react";
+import { commonmark } from "@milkdown/preset-commonmark";
+import type { FC } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+import "@milkdown/theme-nord/style.css";
 
+const markdown = `# Milkdown React Commonmark
+
+> You're scared of a world where you're needed.
+
+This is a demo for using Milkdown with **React**.`;
+
+export const MilkdownEditor: FC = () => {
+  useEditor((root) => {
+    return Editor.make()
+      .config((ctx) => {
+        ctx.set(rootCtx, root);
+        ctx.set(defaultValueCtx, markdown);
+      })
+      .config(nord)
+      .use(commonmark);
+  }, []);
+
+  return <Milkdown />;
+};
+
+const App: React.FC = () => {
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <MilkdownProvider>
+      <MilkdownEditor />
+    </MilkdownProvider>
+  );
+};
 
-export default App
+export default App;
